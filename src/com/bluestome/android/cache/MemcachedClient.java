@@ -18,6 +18,8 @@
 
 package com.bluestome.android.cache;
 
+import android.util.Log;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -620,7 +622,7 @@ public class MemcachedClient {
      * 
      * @param key key to store data under
      * @param value value to store
-     * @param hashCode if not null, then the int hashcode to use
+     * @param hashCode if not null, then the int hashcode to usea
      * @return true, if the data was successfully stored
      */
     public boolean add(String key, Object value, Integer hashCode) {
@@ -846,13 +848,19 @@ public class MemcachedClient {
         if (compressEnable && val.length > compressThreshold) {
 
             try {
-                if (log.isInfoEnabled()) {
-                    log.info("++++ trying to compress data");
-                    log.info("++++ size prior to compression: " + val.length);
-                }
-                ByteArrayOutputStream bos = new ByteArrayOutputStream(val.length);
+                Log.d("MemcachedClient", "++++ trying to compress data");
+                Log.d("MemcachedClient", "++++ size prior to compression: " + val.length);
+                ByteArrayOutputStream bos = new ByteArrayOutputStream(
+                        CacheConstants.ENCRYPT_START.length +
+                                CacheConstants.ENCRYPT_END.length
+                                + val.length
+                        );
                 GZIPOutputStream gos = new GZIPOutputStream(bos);
+                // write encrypt start bytes
+                gos.write(CacheConstants.ENCRYPT_START);
+                gos.write(CacheConstants.ENCRYPT_END);
                 gos.write(val, 0, val.length);
+                // write encrypt end bytes
                 gos.finish();
                 gos.close();
 
@@ -860,8 +868,7 @@ public class MemcachedClient {
                 val = bos.toByteArray();
                 flags |= F_COMPRESSED;
 
-                if (log.isInfoEnabled())
-                    log.info("++++ compression succeeded, size after: " + val.length);
+                Log.d("MemcachedClient", "++++ compression succeeded, size after: " + val.length);
             } catch (IOException e) {
 
                 // if we have an errorHandler, use its hook
@@ -1386,14 +1393,19 @@ public class MemcachedClient {
                             // will need to be, and we don't want to resize it a
                             // bunch
                             GZIPInputStream gzi = new GZIPInputStream(new ByteArrayInputStream(buf));
-                            ByteArrayOutputStream bos = new ByteArrayOutputStream(buf.length);
+                            ByteArrayOutputStream bos = new ByteArrayOutputStream(buf.length
+                                    - CacheConstants.ENCRYPT_START.length
+                                    - CacheConstants.ENCRYPT_END.length);
 
                             int count;
                             byte[] tmp = new byte[2048];
+                            // drop first n bytes
+                            gzi.skip(CacheConstants.ENCRYPT_START.length);
+                            gzi.skip(CacheConstants.ENCRYPT_END.length);
+                            // start to get really datas
                             while ((count = gzi.read(tmp)) != -1) {
                                 bos.write(tmp, 0, count);
                             }
-
                             // store uncompressed back to buffer
                             buf = bos.toByteArray();
                             gzi.close();
