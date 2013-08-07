@@ -1,28 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dip"
     android:layout_height="wrap_content"
-    android:background="@drawable/trans_bg" >
+    android:background="@drawable/trans_bg"
+    android:gravity="center"
+    android:orientation="vertical" >
 
-    <ProgressBar
+    <ImageView
         android:id="@+id/tip_loading"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="30dp"
-        android:indeterminateBehavior="repeat"
-        android:indeterminateDrawable="@drawable/loading"
-        android:indeterminateDuration="500"
-        android:indeterminateOnly="true" />
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:layout_marginTop="6.66dip"
+        android:src="@drawable/loading" />
 
     <TextView
         android:id="@+id/tip_text"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="6.66dp"
-        android:layout_toRightOf="@+id/tip_loading"
-        android:textColor="@android:color/white"
-        android:textSize="14sp" />
+        android:gravity="center"
+        android:layout_marginTop="9.99dip"
+        android:text="最后来张整体的效果图"
+        android:textColor="@android:color/secondary_text_dark"
+        android:textSize="16sp" />
 
-</RelativeLayout>
+</LinearLayout>
