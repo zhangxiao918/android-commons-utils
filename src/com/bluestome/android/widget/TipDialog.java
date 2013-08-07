@@ -5,6 +5,9 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bluestome.android.utils.R;
@@ -29,6 +32,12 @@ public class TipDialog extends ProgressDialog {
 
         TextView textView = (TextView) this.findViewById(R.id.tip_text);
         textView.setText(text);
+
+        ImageView imageView = (ImageView) findViewById(R.id.tip_loading);
+        // 加载动画
+        Animation animation = AnimationUtils.loadAnimation(
+                getContext(), R.anim.tip_dialog_animation);
+        imageView.startAnimation(animation);
 
         WindowManager.LayoutParams lp = this.getWindow().getAttributes();
         lp.alpha = 0.9f;
