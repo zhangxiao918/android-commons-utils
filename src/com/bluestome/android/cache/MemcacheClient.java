@@ -113,7 +113,8 @@ public class MemcacheClient {
     public boolean add(String key, Object value) {
         if (null == cache)
             return false;
-        return cache.add(key, value, value.hashCode());
+        return cache.add(key, value, new Date(System.currentTimeMillis() + (24 * 60 * 60 * 1000L)),
+                key.hashCode());
     }
 
     public boolean add(String key, Object value, Date expiry) {
