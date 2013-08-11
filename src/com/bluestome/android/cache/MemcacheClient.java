@@ -21,6 +21,15 @@ public class MemcacheClient {
     private Properties properties;
     protected static MemcacheClient instance = null;
 
+    // 配置参数
+    private int iConn;
+    private int minConn;
+    private int maxConn;
+    private int maxIdle;
+    private int mainSleep;
+    private int socketTO;
+    private int socketConnectTO;
+
     /**
      * 保护型构造方法，不允许实例化！
      */
@@ -82,8 +91,15 @@ public class MemcacheClient {
 
         // 设置TCP的参数，连接超时等
         pool.setNagle(false);
-        pool.setSocketTO(3000);
-        pool.setSocketConnectTO(3000);
+        // 读取超时
+        int socketTO = Integer.valueOf(properties.getProperty("socket_read_timeout", "5"));
+        Log.d(TAG, "socketTO:" + mainSleep);
+        pool.setSocketTO(socketTO);
+        // 连接超时
+        int socketConnectTO = Integer.valueOf(properties
+                .getProperty("socket_connect_timeout", "5"));
+        Log.d(TAG, "socketConnectTO:" + mainSleep);
+        pool.setSocketConnectTO(socketConnectTO);
 
         // 初始化连接池
         pool.initialize();
@@ -172,4 +188,54 @@ public class MemcacheClient {
         }
         return null;
     }
+
+    /**
+     * @return the iConn
+     */
+    public int getiConn() {
+        return iConn;
+    }
+
+    /**
+     * @return the minConn
+     */
+    public int getMinConn() {
+        return minConn;
+    }
+
+    /**
+     * @return the maxConn
+     */
+    public int getMaxConn() {
+        return maxConn;
+    }
+
+    /**
+     * @return the maxIdle
+     */
+    public int getMaxIdle() {
+        return maxIdle;
+    }
+
+    /**
+     * @return the mainSleep
+     */
+    public int getMainSleep() {
+        return mainSleep;
+    }
+
+    /**
+     * @return the socketTO
+     */
+    public int getSocketTO() {
+        return socketTO;
+    }
+
+    /**
+     * @return the socketConnectTO
+     */
+    public int getSocketConnectTO() {
+        return socketConnectTO;
+    }
+
 }
