@@ -9,7 +9,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.bluestome.android.databases.depends.DefaultDBCreateExec;
 import com.bluestome.android.databases.depends.IDBCreateExec;
+import com.bluestome.android.utils.StringUtil;
 
 /**
  * 类说明：SQLite操作类
@@ -38,7 +40,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         super(context, name, null, version);
     }
 
-    public synchronized static DatabaseHelper getInstance(Context context) {
+    private synchronized static DatabaseHelper getInstance(Context context) {
         if (databaseHelper == null) {
             try {
                 PackageManager pm = context.getPackageManager();
@@ -51,7 +53,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             } catch (NameNotFoundException e) {
                 e.printStackTrace();
             }
-            databaseHelper = new DatabaseHelper(context, null, null);
+            databaseHelper = new DatabaseHelper(context, name, new DefaultDBCreateExec());
         }
         if (sqLiteDatabase == null) {
             sqLiteDatabase = databaseHelper.getWritableDatabase();
@@ -76,7 +78,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             } catch (NameNotFoundException e) {
                 e.printStackTrace();
             }
-            databaseHelper = new DatabaseHelper(context, dbName, exec);
+            databaseHelper = new DatabaseHelper(context,
+                    StringUtil.isBlank(dbName) ? name : dbName,
+                    (null == exec ? new DefaultDBCreateExec() : exec));
         }
         if (sqLiteDatabase == null) {
             sqLiteDatabase = databaseHelper.getWritableDatabase();
@@ -123,6 +127,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.d(TAG, "onUpgrade !!!! oldVersion  " + oldVersion + "  newVersion:"
                 + newVersion);
+        if (null != exec) {
+            exec.upgradeDB(db, oldVersion, newVersion);
+        } else {
+            Log.e(TAG, "升级失败,没有数据库接口类");
+        }
     }
 
 }

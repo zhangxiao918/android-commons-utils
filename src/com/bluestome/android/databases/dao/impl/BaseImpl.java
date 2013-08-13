@@ -10,6 +10,7 @@ import android.text.TextUtils;
 
 import com.bluestome.android.databases.DatabaseHelper;
 import com.bluestome.android.databases.dao.IBaseDAO;
+import com.bluestome.android.databases.depends.IDBCreateExec;
 import com.bluestome.android.databases.exception.DBException;
 
 import org.apache.commons.lang.StringEscapeUtils;
@@ -30,14 +31,18 @@ public class BaseImpl implements IBaseDAO {
     protected String TAG = this.getClass().getSimpleName();
     protected static final String TIME_TAG = "Time-consuming";
     protected Context context;
+    private String dbName;
+    private IDBCreateExec exec;
     protected ContentResolver resolver;
 
     protected SQLiteDatabase getSQLiteDatabase() {
-        return DatabaseHelper.getInstance(this.context).getSQLiteDatabase();
+        return DatabaseHelper.getInstance(this.context, dbName, exec).getSQLiteDatabase();
     }
 
-    public BaseImpl(Context context) {
+    public BaseImpl(Context context, String dbName, IDBCreateExec exec) {
         this.context = context;
+        this.dbName = dbName;
+        this.exec = exec;
         resolver = context.getContentResolver();
     }
 
