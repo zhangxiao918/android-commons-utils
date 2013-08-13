@@ -91,13 +91,13 @@ public class MemcacheClient {
 
         // 设置TCP的参数，连接超时等
         pool.setNagle(false);
-        // 读取超时
-        int socketTO = Integer.valueOf(properties.getProperty("socket_read_timeout", "5"));
+        // 读取超时 单位 ms(毫秒)
+        int socketTO = Integer.valueOf(properties.getProperty("socket_read_timeout", "5000"));
         Log.d(TAG, "socketTO:" + mainSleep);
         pool.setSocketTO(socketTO);
-        // 连接超时
+        // 连接超时 单位 ms(毫秒)
         int socketConnectTO = Integer.valueOf(properties
-                .getProperty("socket_connect_timeout", "5"));
+                .getProperty("socket_connect_timeout", "5000"));
         Log.d(TAG, "socketConnectTO:" + mainSleep);
         pool.setSocketConnectTO(socketConnectTO);
 
