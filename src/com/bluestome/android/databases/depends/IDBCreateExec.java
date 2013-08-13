@@ -17,4 +17,11 @@ public interface IDBCreateExec {
      * @param db
      */
     void createDB(SQLiteDatabase db);
+
+    /**
+     * 升级数据库
+     * 
+     * @param db
+     */
+    void upgradeDB(SQLiteDatabase db, int oldVersion, int newVersion);
 }
