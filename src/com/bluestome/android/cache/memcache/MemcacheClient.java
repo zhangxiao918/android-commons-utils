@@ -1,5 +1,5 @@
 
-package com.bluestome.android.cache;
+package com.bluestome.android.cache.memcache;
 
 import android.content.Context;
 import android.util.Log;
