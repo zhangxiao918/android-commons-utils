@@ -14,8 +14,7 @@ import java.lang.ref.WeakReference;
  * 
  * @author bluestome.zhang
  */
-public abstract class BaseActivity extends Activity implements IBaseActivity,
-        IActivityInitialization {
+public abstract class BaseActivity extends Activity implements IBaseActivity {
 
     protected MyHandler mHandler = new MyHandler(this);
 
@@ -40,7 +39,6 @@ public abstract class BaseActivity extends Activity implements IBaseActivity,
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
-        init();
     }
 
     @Override
@@ -65,33 +63,6 @@ public abstract class BaseActivity extends Activity implements IBaseActivity,
     protected void onStart() {
         // TODO Auto-generated method stub
         super.onStart();
-    }
-
-    /**
-     * 基本参数初始化
-     */
-    @Override
-    public void init() {
-        // TODO Auto-generated method stub
-
-    }
-
-    /**
-     * 视图组件初始化
-     */
-    @Override
-    public void initViews() {
-        // TODO Auto-generated method stub
-
-    }
-
-    /**
-     * 数据初始化
-     */
-    @Override
-    public void initDatas() {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
