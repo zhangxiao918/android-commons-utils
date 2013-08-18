@@ -5,6 +5,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.widget.ImageView;
 
 import com.bluestome.android.cache.clientcache.FileCache;
@@ -34,10 +38,12 @@ public class ImageLoader {
 
     MemoryCache memoryCache = new MemoryCache();
     FileCache fileCache;
-    private Map<ImageView, String> imageViews = Collections
-            .synchronizedMap(new WeakHashMap<ImageView, String>());
+    private Map<String, String> imageViews = Collections
+            .synchronizedMap(new WeakHashMap<String, String>());
     // 线程池
     ExecutorService executorService;
+
+    boolean isScale = true;
 
     public ImageLoader(Context context) {
         fileCache = new FileCache(context);
@@ -48,14 +54,23 @@ public class ImageLoader {
     final int stub_id = R.drawable.item_image_loading;
 
     // 最主要的方法
-    public void DisplayImage(String url, ImageView imageView) {
-        imageViews.put(imageView, url);
+    public void DisplayImage(String url, ImageView imageView, boolean isScale) {
+        this.isScale = isScale;
+        imageViews.put(imageView.getTag().toString(), url);
         // 先从内存缓存中查找
 
         Bitmap bitmap = memoryCache.get(url);
-        if (bitmap != null)
-            imageView.setImageBitmap(bitmap);
-        else {
+        if (bitmap != null) {
+            final TransitionDrawable td = new TransitionDrawable(
+                    new Drawable[] {
+                            new ColorDrawable(android.R.color.transparent),
+                            new BitmapDrawable(bitmap)
+                    });
+            td.setCrossFadeEnabled(true);
+            imageView.setImageDrawable(td);
+            td.startTransition(300);
+            // imageView.setImageBitmap(bitmap);
+        } else {
             // 若没有的话则开启新线程加载图片
             queuePhoto(url, imageView);
             imageView.setImageResource(stub_id);
@@ -101,6 +116,7 @@ public class ImageLoader {
         try {
             // decode image size
             BitmapFactory.Options o = new BitmapFactory.Options();
+            BitmapFactory.Options o2 = new BitmapFactory.Options();
             o.inJustDecodeBounds = true;
             BitmapFactory.decodeStream(new FileInputStream(f), null, o);
 
@@ -108,18 +124,18 @@ public class ImageLoader {
             final int REQUIRED_SIZE = 100;
             int width_tmp = o.outWidth, height_tmp = o.outHeight;
             int scale = 1;
-            while (true) {
-                if (width_tmp / 2 < REQUIRED_SIZE
-                        || height_tmp / 2 < REQUIRED_SIZE)
-                    break;
-                width_tmp /= 2;
-                height_tmp /= 2;
-                scale *= 2;
+            if (isScale) {
+                while (true) {
+                    if (width_tmp / 2 < REQUIRED_SIZE
+                            || height_tmp / 2 < REQUIRED_SIZE)
+                        break;
+                    width_tmp /= 2;
+                    height_tmp /= 2;
+                    scale *= 2;
+                }
+                // decode with inSampleSize
+                o2.inSampleSize = scale;
             }
-
-            // decode with inSampleSize
-            BitmapFactory.Options o2 = new BitmapFactory.Options();
-            o2.inSampleSize = scale;
             return BitmapFactory.decodeStream(new FileInputStream(f), null, o2);
         } catch (FileNotFoundException e) {
         }
@@ -166,7 +182,7 @@ public class ImageLoader {
      * @return
      */
     boolean imageViewReused(PhotoToLoad photoToLoad) {
-        String tag = imageViews.get(photoToLoad.imageView);
+        String tag = imageViews.get((String) photoToLoad.imageView.getTag());
         if (tag == null || !tag.equals(photoToLoad.url))
             return true;
         return false;
