@@ -4,6 +4,7 @@ package com.bluestome.android.bean;
 import java.io.Serializable;
 
 public class LinkBean implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String link;
     private String name;
     private String title;

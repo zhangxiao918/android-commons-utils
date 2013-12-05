@@ -38,7 +38,7 @@ public class ContextObjectInputStream extends ObjectInputStream {
         mLoader = loader;
     }
 
-    protected Class resolveClass(ObjectStreamClass v) throws IOException, ClassNotFoundException {
+    protected Class<?> resolveClass(ObjectStreamClass v) throws IOException, ClassNotFoundException {
         if (mLoader == null)
             return super.resolveClass(v);
         else

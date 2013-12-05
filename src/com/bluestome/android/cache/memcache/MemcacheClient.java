@@ -182,7 +182,7 @@ public class MemcacheClient {
         return cache.get(key);
     }
 
-    public Map getStats() {
+    public Map<?, ?> getStats() {
         if (null != cache) {
             return cache.stats();
         }

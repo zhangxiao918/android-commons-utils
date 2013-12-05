@@ -39,12 +39,12 @@ public class Logger {
     public static final int LEVEL_ERROR = 3;
     public static final int LEVEL_FATAL = 4;
 
-    private static Map<String, Logger> loggers =
+    static Map<String, Logger> loggers =
             new HashMap<String, Logger>();
 
-    private String name;
-    private int level;
-    private boolean initialized = false;
+    String name;
+    int level;
+    boolean initialized = false;
 
     public void setLevel(int level) {
         this.level = level;

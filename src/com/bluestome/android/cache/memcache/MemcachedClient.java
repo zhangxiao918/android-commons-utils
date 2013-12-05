@@ -273,6 +273,8 @@ public class MemcachedClient {
     // optional error handler
     private ErrorHandler errorHandler;
 
+    private ContextObjectInputStream ois;
+
     /**
      * Creates a new instance of MemCachedClient.
      */
@@ -1449,10 +1451,8 @@ public class MemcachedClient {
                         }
                     }
                     else {
-                        // deserialize if the data is serialized
-                        ContextObjectInputStream ois =
-                                new ContextObjectInputStream(new ByteArrayInputStream(buf),
-                                        classLoader);
+                        ois = new ContextObjectInputStream(new ByteArrayInputStream(buf),
+                                classLoader);
                         try {
                             o = ois.readObject();
                             if (log.isInfoEnabled())

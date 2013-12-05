@@ -8,6 +8,7 @@ import java.util.List;
 
 public class ResultBean implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     private boolean bool;
     private List<LinkBean> list = new ArrayList<LinkBean>();
     private HashMap<String, LinkBean> map = new HashMap<String, LinkBean>();

@@ -40,30 +40,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         super(context, name, null, version);
     }
 
-    private synchronized static DatabaseHelper getInstance(Context context) {
-        if (databaseHelper == null) {
-            try {
-                PackageManager pm = context.getPackageManager();
-                PackageInfo pinfo = pm.getPackageInfo(context.getPackageName(),
-                        PackageManager.GET_CONFIGURATIONS);
-                version = pinfo.versionCode;
-                if (version == 0) {
-                    version = 1;
-                }
-            } catch (NameNotFoundException e) {
-                e.printStackTrace();
-            }
-            databaseHelper = new DatabaseHelper(context, name, new DefaultDBCreateExec());
-        }
-        if (sqLiteDatabase == null) {
-            sqLiteDatabase = databaseHelper.getWritableDatabase();
-            Log.e(TAG, "初始化SQLiteDatabase [" + (sqLiteDatabase != null) + "], name [" + name
-                    + "], version [" + version + "]");
-        }
-
-        return databaseHelper;
-    }
-
     public synchronized static DatabaseHelper getInstance(Context context, String dbName,
             IDBCreateExec exec) {
         if (databaseHelper == null) {
