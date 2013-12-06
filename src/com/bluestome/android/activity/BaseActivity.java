@@ -6,6 +6,9 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.widget.Toast;
+
+import com.bluestome.android.widget.ToastUtil;
 
 import java.lang.ref.WeakReference;
 
@@ -71,4 +74,54 @@ public abstract class BaseActivity extends Activity implements IBaseActivity {
         return this;
     }
 
+    /**
+     * 执行线程
+     * 
+     * @param r 线程接口
+     */
+    protected void submit(Runnable r) {
+        submit(r, 0L);
+    }
+
+    /**
+     * 执行线程
+     * 
+     * @param runnable 线程接口
+     * @param delayed 延迟时间
+     */
+    protected void submit(Runnable runnable, long delayed) {
+        if (delayed > 0L) {
+            mHandler.postDelayed(runnable, delayed);
+        } else {
+            mHandler.post(runnable);
+        }
+    }
+
+    protected int mQuitCount = 0;
+
+    /**
+     * 退出游戏逻辑方法
+     * 
+     * @return
+     */
+    protected abstract void quit();
+
+    /**
+     * 重置计数器方法
+     * 
+     * @return
+     */
+    protected abstract void resetQuit();
+
+    @Override
+    public void onBackPressed() {
+        mQuitCount++;
+        if (mQuitCount % 2 == 0) {
+            super.onBackPressed();
+            quit();
+        } else {
+            ToastUtil.resultNotify(getContext(), "再按一次退出游戏", Toast.LENGTH_SHORT);
+            resetQuit();
+        }
+    }
 }
