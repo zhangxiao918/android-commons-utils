@@ -271,10 +271,11 @@ public class HttpClientUtils {
                 is = http.getInputStream();
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
                 int ch;
-                while ((ch = is.read()) != -1) {
-                    out.write(ch);
+                byte[] buffer = new byte[2048];
+                while ((ch = is.read(buffer)) != -1) {
+                    out.write(buffer, 0, ch);
+                    out.flush();
                 }
-                out.flush();
                 // 默认使用当前系统的字符集
                 result = out.toString();
                 out.close();
@@ -313,10 +314,11 @@ public class HttpClientUtils {
                 is = http.getInputStream();
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
                 int ch;
-                while ((ch = is.read()) != -1) {
-                    out.write(ch);
+                byte[] buffer = new byte[2048];
+                while ((ch = is.read(buffer)) != -1) {
+                    out.write(buffer, 0, ch);
+                    out.flush();
                 }
-                out.flush();
                 result = out.toString(charset);
                 out.close();
             }
@@ -470,7 +472,7 @@ public class HttpClientUtils {
             is = connection.getInputStream();
             if (length > 0) {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                byte[] buffer = new byte[2 * 1024];
+                byte[] buffer = new byte[2048];
                 int ch;
                 while ((ch = is.read(buffer)) != -1) {
                     baos.write(buffer, 0, ch);
@@ -521,7 +523,7 @@ public class HttpClientUtils {
             is = connection.getInputStream();
             if (length > 0) {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                byte[] buffer = new byte[2 * 1024];
+                byte[] buffer = new byte[2048];
                 int ch;
                 while ((ch = is.read(buffer)) != -1) {
                     baos.write(buffer, 0, ch);
@@ -582,10 +584,11 @@ public class HttpClientUtils {
                     out = new ByteArrayOutputStream();
                     is = http.getInputStream();
                     int ch;
-                    while ((ch = is.read()) != -1) {
-                        out.write(ch);
+                    byte[] buffer = new byte[2048];
+                    while ((ch = is.read(buffer)) != -1) {
+                        out.write(buffer, 0, ch);
+                        out.flush();
                     }
-                    out.flush();
                     result = out.toByteArray();
                 }
             }
@@ -662,10 +665,11 @@ public class HttpClientUtils {
                     out = new ByteArrayOutputStream();
                     is = http.getInputStream();
                     int ch;
-                    while ((ch = is.read()) != -1) {
-                        out.write(ch);
+                    byte[] buffer = new byte[2048];
+                    while ((ch = is.read(buffer)) != -1) {
+                        out.write(buffer, 0, ch);
+                        out.flush();
                     }
-                    out.flush();
                     result = out.toByteArray();
                     object.setBody(result);
                 }
